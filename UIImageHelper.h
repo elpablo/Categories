@@ -14,12 +14,21 @@
  limitations under the License.
  ***************************************************************************/
 
-@interface UIImage (Resize)
+@interface UIImage (Helper)
 
 /** Produce a UIImage by scaling self to the given size without taking in account at the proporsions.*/
 - (UIImage*)scaleToSize:(CGSize)size;
 
-/** Produce a UIImage by scaling self proportionally to the given size.*/
-- (UIImage *)imageByScalingProportionallyToSize:(CGSize)targetSize;
+/** Produce a UIImage by scaling self proportionally to fit the given size.*/
+- (UIImage *)imageByScalingProportionallyToFitSize:(CGSize)targetSize;
+
+/** Produce a UIImage by scaling self proportionally to fill the given size.*/
+- (UIImage *)imageByScalingProportionallyToFillSize:(CGSize)targetSize borderWidth:(int)border andShadow:(BOOL)shadow;
+
+/** Produce a UIImage with round corners starting from the given source image. */
++ (UIImage *)imageWithRoundCornersOfImage:(UIImage *)source;
+
+/** Produce a UIImage pixel colored with given color. */
++ (UIImage *)imagePixelWithColor:(UIColor *)color;
 
 @end

@@ -18,7 +18,7 @@
 #import "UIImageHelper.h"
 
 
-@implementation UIImage (Resize)
+@implementation UIImage (Helper)
 
 - (UIImage*)scaleToSize:(CGSize)size {
 	UIGraphicsBeginImageContext(size);
@@ -36,8 +36,7 @@
 	return scaledImage;
 }
 
-- (UIImage *)imageByScalingProportionallyToSize:(CGSize)targetSize {
-    
+- (UIImage *)imageByScalingProportionallyToFitSize:(CGSize)targetSize {
     UIImage *sourceImage = self;
     UIImage *newImage = nil;
     
@@ -58,10 +57,11 @@
         CGFloat widthFactor = targetWidth / width;
         CGFloat heightFactor = targetHeight / height;
         
-        if (widthFactor < heightFactor) 
-            scaleFactor = widthFactor;
-        else
-            scaleFactor = heightFactor;
+        scaleFactor = MIN(widthFactor, heightFactor);
+//        if (widthFactor < heightFactor) 
+//            scaleFactor = widthFactor;
+//        else
+//            scaleFactor = heightFactor;
         
         scaledWidth  = width * scaleFactor;
         scaledHeight = height * scaleFactor;
@@ -81,8 +81,8 @@
     thumbnailRect.size.height = scaledHeight;
 
 	UIGraphicsBeginImageContext(targetSize);
-	
     [sourceImage drawInRect:thumbnailRect];
+
     newImage = UIGraphicsGetImageFromCurrentImageContext();
 	
 	UIGraphicsEndImageContext();
@@ -90,6 +90,126 @@
     if(newImage == nil) NSLog(@"could not scale image");
     
     return newImage ;
+}
+
+- (UIImage *)imageByScalingProportionallyToFillSize:(CGSize)targetSize borderWidth:(int)border andShadow:(BOOL)shadow {
+    UIImage *sourceImage = self;
+    CGFloat scaleFactor = 1.0;
+    
+    CGRect frameRect = CGRectMake(0, 0, floor(self.size.width), floor(self.size.height));
+    
+    if (targetSize.width > targetSize.height) {
+        scaleFactor = self.size.width / frameRect.size.width;
+    } else {
+        scaleFactor = self.size.height / frameRect.size.height;
+    }
+    
+    CGSize scaledSize = CGSizeMake( floor(frameRect.size.width * scaleFactor), floor(frameRect.size.height * scaleFactor));
+
+    UIGraphicsBeginImageContext(scaledSize);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    UIImage *result = nil;
+    if (context != nil) {
+        CGRect imgRect = CGRectZero;
+        imgRect.size = scaledSize;
+        // First fill the background with white.
+        CGContextSetRGBFillColor(context, 0., 0., 0., 1.);
+        CGContextFillRect(context, imgRect);
+        CGContextSaveGState(context);
+        // Scale the context so that the image is rendered 
+        // at the correct size for the zoom level.
+        CGContextScaleCTM(context, scaleFactor, scaleFactor);
+
+        [sourceImage drawInRect:imgRect];
+        
+        CGContextRestoreGState(context);
+        
+        if (border > 0) {
+            // Draw a border
+            CGContextSetLineWidth(context, border);
+            CGContextStrokeRect(context, imgRect);
+        }
+
+        CGImageRef image = CGBitmapContextCreateImage(context);        
+        result = [[UIImage alloc] initWithCGImage:image];
+        CGImageRelease(image);
+        UIGraphicsEndImageContext();
+        
+    }
+    UIGraphicsEndImageContext();
+
+    if (context && shadow) {
+        // Shadow
+        UIGraphicsBeginImageContext(CGSizeMake(result.size.width + 10, result.size.height + 10));
+        CGContextRef imageShadowContext = UIGraphicsGetCurrentContext();
+        if (imageShadowContext != nil) {
+            CGContextSetShadow(imageShadowContext, CGSizeMake(10, 10), 5);
+            [result drawInRect:CGRectMake(5, 5, result.size.width, result.size.height)];
+            [result release];
+            result = UIGraphicsGetImageFromCurrentImageContext();
+            [result retain];
+            UIGraphicsEndImageContext();
+        }
+    }
+    return result;
+}
+
+void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWidth, float ovalHeight);
+void addRoundedRectToPath(CGContextRef context, CGRect rect, float ovalWidth, float ovalHeight) {
+	float fw, fh;
+	if (ovalWidth == 0 || ovalHeight == 0) {
+		CGContextAddRect(context, rect);
+		return;
+	}
+	CGContextSaveGState(context);
+	CGContextTranslateCTM (context, CGRectGetMinX(rect), CGRectGetMinY(rect));
+	CGContextScaleCTM (context, ovalWidth, ovalHeight);
+	fw = CGRectGetWidth (rect) / ovalWidth;
+	fh = CGRectGetHeight (rect) / ovalHeight;
+	CGContextMoveToPoint(context, fw, fh/2);
+	CGContextAddArcToPoint(context, fw, fh, fw/2, fh, 1);
+	CGContextAddArcToPoint(context, 0, fh, 0, fh/2, 1);
+	CGContextAddArcToPoint(context, 0, 0, fw/2, 0, 1);
+	CGContextAddArcToPoint(context, fw, 0, fw, fh/2, 1);
+	CGContextClosePath(context);
+	CGContextRestoreGState(context);
+}
+
++ (UIImage *)imageWithRoundCornersOfImage:(UIImage *)source {
+	int w = source.size.width;
+	int h = source.size.height;
+	
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+	CGContextRef context = CGBitmapContextCreate(NULL, w, h, 8, 4 * w, colorSpace, kCGImageAlphaPremultipliedFirst);
+	
+	CGContextBeginPath(context);
+	CGRect rect = CGRectMake(0, 0, w, h);
+	addRoundedRectToPath(context, rect, 5, 5);
+	CGContextClosePath(context);
+	CGContextClip(context);
+	
+	CGContextDrawImage(context, CGRectMake(0, 0, w, h), source.CGImage);
+	
+	CGImageRef imageMasked = CGBitmapContextCreateImage(context);
+	CGContextRelease(context);
+	CGColorSpaceRelease(colorSpace);
+	
+	return [UIImage imageWithCGImage:imageMasked];    
+}
+
++ (UIImage *)imagePixelWithColor:(UIColor *)color {
+    CGRect pixelRect = CGRectMake(0., 0., 1., 1.);
+	UIGraphicsBeginImageContext(pixelRect.size);
+	
+	CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, pixelRect);
+	
+	UIImage *pixelImage = UIGraphicsGetImageFromCurrentImageContext();
+	
+	UIGraphicsEndImageContext();
+    
+    return pixelImage;
 }
 
 @end
