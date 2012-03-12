@@ -31,4 +31,7 @@
 /** Produce a UIImage pixel colored with given color. */
 + (UIImage *)imagePixelWithColor:(UIColor *)color;
 
+/** Produce a UIImage gradient. */
++ (UIImage *)imageGradientWithStartColor:(UIColor *)startColor endColor:(UIColor *)endColor ofSize:(CGSize)imageSize;
+
 @end
