@@ -37,6 +37,7 @@ void drawLinearGradient(CGContextRef context, CGRect rect, CGColorRef startColor
     NSArray *colors = [NSArray arrayWithObjects:(id)startColor, (id)endColor, nil];
     
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef) colors, locations);
+    CGColorSpaceRelease(colorSpace);
     
     CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
     CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
