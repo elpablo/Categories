@@ -36,7 +36,11 @@
         [array addObject:objectToMove];
         [copy removeObjectAtIndex:index];
     }
+#if __has_feature(objc_arc)
+#else
     [copy release];
+#endif
+
     return array;
 }
 

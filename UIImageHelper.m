@@ -34,9 +34,9 @@ void drawLinearGradient(CGContextRef context, CGRect rect, CGColorRef startColor
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     CGFloat locations[] = { 0.0, 1.0 };
     
-    NSArray *colors = [NSArray arrayWithObjects:(id)startColor, (id)endColor, nil];
+    NSArray *colors = [NSArray arrayWithObjects:(__bridge id)startColor, (__bridge id)endColor, nil];
     
-    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef) colors, locations);
+    CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef) colors, locations);
     CGColorSpaceRelease(colorSpace);
     
     CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
@@ -207,9 +207,15 @@ void drawGlossAndGradient(CGContextRef context, CGRect rect, CGColorRef startCol
         if (imageShadowContext != nil) {
             CGContextSetShadow(imageShadowContext, CGSizeMake(10, 10), 5);
             [result drawInRect:CGRectMake(5, 5, result.size.width, result.size.height)];
+#if __has_feature(objc_arc)
+#else
             [result release];
+#endif
             result = UIGraphicsGetImageFromCurrentImageContext();
+#if __has_feature(objc_arc)
+#else
             [result retain];
+#endif
             UIGraphicsEndImageContext();
         }
     }
