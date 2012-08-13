@@ -22,6 +22,6 @@
 /*
  * Convert a string represented by 4 integer numbers [0..255] into a UIColor
  */
-- (UIColor *)colorFromRGBA;
+- (UIColor *)RGBAStringToColor;
 
 @end

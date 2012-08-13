@@ -19,7 +19,7 @@
 
 @implementation NSString (Helper)
 
-- (UIColor *)colorFromRGBA
+- (UIColor *)RGBAStringToColor
 {
     NSArray *rgba = [self componentsSeparatedByString:@" "];
     int num_comp = [rgba count];
