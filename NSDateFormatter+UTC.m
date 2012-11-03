@@ -18,8 +18,8 @@
     
     [self setTimeZone:[self timezoneFromString:dateStr]];
     [self setDateFormat:(format == nil) ? @"yyyy-MM-dd'T'HH:mm:ss" : format];
-//    return [self dateFromString:([dateStr length] == 19) ? dateStr : [dateStr substringToIndex:19]];
-    return [self dateFromString:[[dateStr stringByReplacingOccurrencesOfString:@" " withString:@""] substringToIndex:19]];
+    NSDate *d = [self dateFromString:[[dateStr stringByReplacingOccurrencesOfString:@" " withString:@""] substringToIndex:19]];
+    return d;
 }
 
 - (NSTimeZone *)timezoneFromString:(NSString *)dateStr
@@ -35,6 +35,17 @@
     NSInteger minutesFromGMT = [[GMTString substringFromIndex:3] intValue];
     NSInteger secondsFromGMT = (hoursFromGMT * 60 * 60) + (minutesFromGMT * 60);
     return [NSTimeZone timeZoneForSecondsFromGMT:secondsFromGMT];
+}
+
+- (NSDate *)dateFromString:(NSString *)dateStr withFormat:(NSString *)format
+{
+    NSString *oldFormat = self.dateFormat;
+    self.dateFormat = format;
+    NSDate *d = [self dateFromString:dateStr];
+    if (oldFormat) {
+        self.dateFormat = oldFormat;
+    }
+    return d;
 }
 
 @end

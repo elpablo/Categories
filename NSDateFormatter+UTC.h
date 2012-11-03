@@ -16,7 +16,10 @@
  */
 - (NSDate *)dateFromStringUTC:(NSString *)dateStr utcFormat:(NSString *)format;
 
-// Pass a full date as string containing the time-zone information or the time-zone string.
+/// Pass a full date as string containing the time-zone information or the time-zone string.
 - (NSTimeZone *)timezoneFromString:(NSString *)dateStr;
+
+/// Return a NSDate instance starting from a date represented as string and given format.
+- (NSDate *)dateFromString:(NSString *)dateStr withFormat:(NSString *)format;
 
 @end
