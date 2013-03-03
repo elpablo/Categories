@@ -20,7 +20,8 @@
 @interface NSString (Helper)
 
 /*
- * Convert a string represented by 4 integer numbers [0..255] into a UIColor
+ * Convert a string represented by 4 integers [0..255] into a UIColor
+ * Example: @"127 255 97 255"
  */
 - (UIColor *)RGBAStringToColor;
 
