@@ -25,4 +25,6 @@
  */
 - (UIColor *)RGBAStringToColor;
 
+- (BOOL)representsValidEmail;
+
 @end
