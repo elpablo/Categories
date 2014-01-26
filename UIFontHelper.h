@@ -19,9 +19,10 @@
 
 @interface UIFont (Helper)
 
-/*
- * Create a UIFont starting from a custom font file (ttf extension)
+/**
+ * Register the font at the given file path and returns the Postscript font name on success, nil otherwise.
+ * Then use the returned font name to create the UIFont instance.
  */
-+ (UIFont *)fontWithFilePath:(NSString *)name pointSize:(CGFloat)size;
++ (NSString *)registerFontWithFilePath:(NSString *)name;
 
 @end

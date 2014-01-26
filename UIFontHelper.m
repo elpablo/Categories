@@ -19,16 +19,19 @@
 
 @implementation UIFont (Helper)
 
-+ (UIFont *)fontWithFilePath:(NSString *)fpath pointSize:(CGFloat)size
++ (NSString *)registerFontWithFilePath:(NSString *)name
 {
-    CGDataProviderRef fontDataProvider = CGDataProviderCreateWithFilename([fpath UTF8String]);
+    NSString *fontName = nil;
+    CGDataProviderRef fontDataProvider = CGDataProviderCreateWithFilename([name UTF8String]);
+    if (fontDataProvider == NULL) return fontName;
     CGFontRef customFont = CGFontCreateWithDataProvider(fontDataProvider);
     CGDataProviderRelease(fontDataProvider);
-    NSString *fontName = (__bridge NSString *)CGFontCopyPostScriptName(customFont);
+    if (customFont == NULL) return fontName;
+    fontName = (__bridge NSString *)CGFontCopyPostScriptName(customFont);
     CFErrorRef error;
-    CTFontManagerRegisterGraphicsFont(customFont, &error);
+    bool result = CTFontManagerRegisterGraphicsFont(customFont, &error);
     CGFontRelease(customFont);
-    return [UIFont fontWithName:fontName size:size];
+    return result ? fontName : nil;
 }
 
 @end
