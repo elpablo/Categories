@@ -23,6 +23,6 @@
  * Register the font at the given file path and returns the Postscript font name on success, nil otherwise.
  * Then use the returned font name to create the UIFont instance.
  */
-+ (NSString *)registerFontWithFilePath:(NSString *)name;
++ (NSString *)pqRegisterFontWithFilePath:(NSString *)name;
 
 @end

@@ -19,7 +19,7 @@
 
 @implementation UIFont (Helper)
 
-+ (NSString *)registerFontWithFilePath:(NSString *)name
++ (NSString *)pqRegisterFontWithFilePath:(NSString *)name
 {
     NSString *fontName = nil;
     CGDataProviderRef fontDataProvider = CGDataProviderCreateWithFilename([name UTF8String]);
@@ -27,7 +27,7 @@
     CGFontRef customFont = CGFontCreateWithDataProvider(fontDataProvider);
     CGDataProviderRelease(fontDataProvider);
     if (customFont == NULL) return fontName;
-    fontName = (__bridge NSString *)CGFontCopyPostScriptName(customFont);
+    fontName = (__bridge_transfer NSString *)CGFontCopyPostScriptName(customFont);
     CFErrorRef error;
     bool result = CTFontManagerRegisterGraphicsFont(customFont, &error);
     CGFontRelease(customFont);
