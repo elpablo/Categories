@@ -98,60 +98,44 @@ void drawGlossAndGradient(CGContextRef context, CGRect rect, CGColorRef startCol
 	return scaledImage;
 }
 
-- (UIImage *)imageByScalingProportionallyToFitSize:(CGSize)targetSize {
-    UIImage *sourceImage = self;
-    UIImage *newImage = nil;
-    
-    CGSize imageSize = sourceImage.size;
-    CGFloat width = imageSize.width;
-    CGFloat height = imageSize.height;
-    
-    CGFloat targetWidth = targetSize.width;
-    CGFloat targetHeight = targetSize.height;
-    
-    CGFloat scaleFactor = 0.0;
-    CGFloat scaledWidth = targetWidth;
-    CGFloat scaledHeight = targetHeight;
-    
+- (UIImage *)imageByScalingProportionallyToFitSize:(CGSize)targetSize rounded:(BOOL)rounded
+{
     CGPoint thumbnailPoint = CGPointMake(0.0,0.0);
     
-    if (CGSizeEqualToSize(imageSize, targetSize) == NO) {
-        CGFloat widthFactor = targetWidth / width;
-        CGFloat heightFactor = targetHeight / height;
-        
-        scaleFactor = MIN(widthFactor, heightFactor);
-//        if (widthFactor < heightFactor) 
-//            scaleFactor = widthFactor;
-//        else
-//            scaleFactor = heightFactor;
-        
-        scaledWidth  = width * scaleFactor;
-        scaledHeight = height * scaleFactor;
-        
-        // center the image
-        if (widthFactor < heightFactor) {
-            thumbnailPoint.y = (targetHeight - scaledHeight) * 0.5; 
-        } else if (widthFactor > heightFactor) {
-            thumbnailPoint.x = (targetWidth - scaledWidth) * 0.5;
-        }
+    CGFloat widthFactor = targetSize.width / self.size.width;
+    CGFloat heightFactor = targetSize.height / self.size.height;
+    CGFloat scaleFactor = MIN(widthFactor, heightFactor);
+    CGFloat scaledWidth  = self.size.width * scaleFactor;
+    CGFloat scaledHeight = self.size.height * scaleFactor;
+    
+    // center the image
+    if (widthFactor < heightFactor) {
+        thumbnailPoint.y = (targetSize.height - scaledHeight) * 0.5;
+    } else if (widthFactor > heightFactor) {
+        thumbnailPoint.x = (targetSize.width - scaledWidth) * 0.5;
     }
     
-    
-    CGRect thumbnailRect = CGRectZero;
-    thumbnailRect.origin = thumbnailPoint;
-    thumbnailRect.size.width  = scaledWidth;
-    thumbnailRect.size.height = scaledHeight;
+    CGRect thumbnailRect = (CGRect) {
+        thumbnailRect.origin = thumbnailPoint,
+        thumbnailRect.size.width  = scaledWidth,
+        thumbnailRect.size.height = scaledHeight
+    };
 
 	UIGraphicsBeginImageContext(targetSize);
-    [sourceImage drawInRect:thumbnailRect];
+    
+    if (rounded) {
+        CGPoint img_center = CGPointMake(CGRectGetMidX(thumbnailRect), CGRectGetMidY(thumbnailRect));
+        UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:img_center radius:CGRectGetWidth(thumbnailRect)/2. startAngle:0 endAngle:2*M_PI clockwise:YES];
+        [path addClip];
+    }
 
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    [self drawInRect:thumbnailRect];
+
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
 	
 	UIGraphicsEndImageContext();
 
-    if(newImage == nil) NSLog(@"could not scale image");
-    
-    return newImage ;
+    return newImage;
 }
 
 - (UIImage *)imageByScalingProportionallyToFillSize:(CGSize)targetSize borderWidth:(int)border andShadow:(BOOL)shadow {

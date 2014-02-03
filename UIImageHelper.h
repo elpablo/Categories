@@ -20,7 +20,7 @@
 - (UIImage*)scaleToSize:(CGSize)size;
 
 /** Produce a UIImage by scaling self proportionally to fit the given size.*/
-- (UIImage *)imageByScalingProportionallyToFitSize:(CGSize)targetSize;
+- (UIImage *)imageByScalingProportionallyToFitSize:(CGSize)targetSize rounded:(BOOL)rounded;
 
 /** Produce a UIImage by scaling self proportionally to fill the given size.*/
 - (UIImage *)imageByScalingProportionallyToFillSize:(CGSize)targetSize borderWidth:(int)border andShadow:(BOOL)shadow;
