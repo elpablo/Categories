@@ -48,4 +48,19 @@
     return d;
 }
 
+static NSDateFormatter *sRFC3339DateFormatter = nil;
+
++ (NSString *)rfc3339DateFormatAsString:(NSDate *)date
+{
+    if (sRFC3339DateFormatter == nil) {
+        sRFC3339DateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        
+        [sRFC3339DateFormatter setLocale:enUSPOSIXLocale];
+        [sRFC3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [sRFC3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    }
+    return [sRFC3339DateFormatter stringFromDate:date];
+}
+
 @end

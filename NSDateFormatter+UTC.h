@@ -22,4 +22,7 @@
 /// Return a NSDate instance starting from a date represented as string and given format.
 - (NSDate *)dateFromString:(NSString *)dateStr withFormat:(NSString *)format;
 
+/// Returns the string representing a date formatted as RFC3339 (eg: 2007-01-07T09:42:00Z)
++ (NSString *)rfc3339DateFormatAsString:(NSDate *)date;
+
 @end
