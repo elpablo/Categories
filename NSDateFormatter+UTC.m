@@ -3,7 +3,7 @@
 //  NSDateFormatter (Helper)
 //
 //  Created by Paolo Quadrani on 02/09/12.
-//  Copyright (c) 2012 Paolo Quadrani. All rights reserved.
+//  Copyright (c) 2014 Paolo Quadrani. All rights reserved.
 //
 
 #import "NSDateFormatter+UTC.h"
