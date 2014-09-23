@@ -24,4 +24,6 @@
  */
 - (NSString *)jsonString:(BOOL)prettyPrinted;
 
++ (id)objectFromJSONString:(NSString *)json;
+
 @end

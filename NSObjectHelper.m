@@ -27,4 +27,12 @@
     return jsonString;
 }
 
++ (id)objectFromJSONString:(NSString *)json
+{
+    NSError *error;
+    NSData *data = [[NSData alloc] initWithBytes:[json UTF8String] length:[json length]];
+    id obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+    return obj;
+}
+
 @end
