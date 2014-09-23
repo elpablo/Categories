@@ -20,10 +20,13 @@
 @interface NSObject (Helper)
 
 /*
- * Returns the JSON representation for the object
+ * It returns the JSON representation for the object
  */
 - (NSString *)jsonString:(BOOL)prettyPrinted;
 
+/*
+ * It returns the instance of a foundation object given the JSON string
+ */
 + (id)objectFromJSONString:(NSString *)json;
 
 @end
