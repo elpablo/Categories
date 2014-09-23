@@ -20,13 +20,18 @@
 @interface NSDictionary (Helper)
 
 /*
+ * Checks to see if the dictionary is empty
+ */
+@property(nonatomic,readonly,getter=isEmpty) BOOL empty;
+
+/*
  * Checks to see if the dictionary contains the given key
  */
 - (BOOL)containsKey:(id)key;
 
 /*
- * Checks to see if the dictionary is empty
+ * Returns the JSON representation for the dictionary
  */
-@property(nonatomic,readonly,getter=isEmpty) BOOL empty;
+- (NSString *)jsonString:(BOOL)prettyPrinted;
 
 @end

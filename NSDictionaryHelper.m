@@ -27,4 +27,12 @@
 	return [self count] == 0 ? YES : NO;
 }
 
+- (NSString *)jsonString:(BOOL)prettyPrinted
+{
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:prettyPrinted ? NSJSONWritingPrettyPrinted : 0 error:&error];
+    NSString *jsonString = !error ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : @"";
+    return jsonString;
+}
+
 @end
