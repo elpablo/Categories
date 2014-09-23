@@ -29,9 +29,4 @@
  */
 - (BOOL)containsKey:(id)key;
 
-/*
- * Returns the JSON representation for the dictionary
- */
-- (NSString *)jsonString:(BOOL)prettyPrinted;
-
 @end
