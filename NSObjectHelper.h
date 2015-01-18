@@ -1,5 +1,5 @@
 /***************************************************************************
- Copyright [2014] [Paolo Quadrani]
+ Copyright [2015] [Paolo Quadrani]
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,7 +22,12 @@
 /*
  * It returns the JSON representation for the object
  */
-- (NSString *)jsonString:(BOOL)prettyPrinted;
+- (NSString *)jsonPrettyString;
+
+/*
+ * It returns the JSON representation for the object
+ */
+- (NSString *)jsonString;
 
 /*
  * It returns the instance of a foundation object given the JSON string

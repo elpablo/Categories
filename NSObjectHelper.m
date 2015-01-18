@@ -1,5 +1,5 @@
 /***************************************************************************
- Copyright [2014] [Paolo Quadrani]
+ Copyright [2015] [Paolo Quadrani]
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,10 +19,18 @@
 
 @implementation NSObject (Helper)
 
-- (NSString *)jsonString:(BOOL)prettyPrinted
+- (NSString *)jsonPrettyString
 {
     NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:prettyPrinted ? NSJSONWritingPrettyPrinted : 0 error:&error];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:&error];
+    NSString *jsonString = !error ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : @"";
+    return jsonString;
+}
+
+- (NSString *)jsonString
+{
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self options:0 error:&error];
     NSString *jsonString = !error ? [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding] : @"";
     return jsonString;
 }
